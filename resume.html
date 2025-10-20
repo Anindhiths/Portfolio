@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resume — Anindhith Sankanna</title>
+  <meta name="description" content="Resume of Anindhith Sankanna" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="/index.html">AS</a>
+      <nav>
+        <a href="/index.html">Home</a>
+        <a href="/resume.html" class="active">Resume</a>
+        <a href="/projects.html">Projects</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container resume">
+    <section class="resume-header">
+      <h1>Anindhith Sankanna</h1>
+      <p>Bengaluru | <a href="mailto:anindhiths@gmail.com">anindhiths@gmail.com</a> | <a href="https://linkedin.com/in/anindhith-s" target="_blank" rel="noopener">linkedin.com/in/anindhith-s</a> | <a href="https://github.com/Anindhiths" target="_blank" rel="noopener">github.com/Anindhiths</a></p>
+    </section>
+
+    <section>
+      <h2>Summary</h2>
+      <p>Bachelor of Engineering in Computer Science student at RV Institute of Technology and Management with a strong foundation in software engineering and a passion for financial analysis. Proficient in Python, C, C++, and Java.</p>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      <div class="item">
+        <div class="item-header">
+          <h3>R V Institute of Technology and Management — B.E. in Computer Science Engineering</h3>
+          <span class="meta">CGPA: 9.4/10.0 • Currently in 3rd Year • Graduating Aug 2027</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Projects</h2>
+      <div class="item">
+        <div class="item-header">
+          <h3>Overruled! — Interactive Courtroom Drama</h3>
+          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Overruled">github.com/Anindhiths/Overruled</a>
+        </div>
+        <ul>
+          <li>AI-powered judge, opposing counsel, and dynamic witnesses; outcomes recorded on Monad blockchain.</li>
+          <li>Designed for immersive argumentation, evaluation, and legal reasoning skill-building via gameplay.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <h3>Reverse the Sign — 2D Game</h3>
+          <a class="meta" target="_blank" rel="noopener" href="https://itch.io/jam/gmtk-2023/rate/2159319">itch.io page</a>
+        </div>
+        <ul>
+          <li>Entry for GMTK 2023 Game Jam; designed and implemented 2D mechanics and level design.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <h3>Tetris</h3>
+          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Tetris">github.com/Anindhiths/Tetris</a>
+        </div>
+        <ul>
+          <li>Classic block-stacking game with smooth controls, increasing difficulty, and a scoring system.</li>
+          <li>Tech: Python, Pygame.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <h3>Amazon Discount Checker</h3>
+          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Amazon-Discount-Checker">github.com/Anindhiths/Amazon-Discount-Checker</a>
+        </div>
+        <ul>
+          <li>Monitors Amazon products and alerts users when discounts or price changes occur.</li>
+          <li>Tech: Python, BeautifulSoup.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <h3>Movie Recommender</h3>
+          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Movie-Reccomender">github.com/Anindhiths/Movie-Reccomender</a>
+        </div>
+        <ul>
+          <li>AI-based movie recommendation using collaborative filtering and content-based approaches.</li>
+          <li>Tech: Python, TensorFlow, Scikit-learn, Pandas.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Certifications</h2>
+      <ul>
+        <li>Financial Markets — Yale University (Online)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Technologies</h2>
+      <div class="skills-grid">
+        <div>
+          <h4>Languages</h4>
+          <p>C++, C, Java, Python, C#, SQL</p>
+        </div>
+        <div>
+          <h4>Frameworks & Tools</h4>
+          <p>MySQL, MongoDB, Google Cloud Platform, Docker, React Native, TensorFlow/PyTorch</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="resume-actions">
+      <button id="printBtn" class="btn">Print/Save as PDF</button>
+    </div>
+
+    <section class="container" id="gameSection"></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Anindhith Sankanna • <a href="mailto:anindhiths@gmail.com">anindhiths@gmail.com</a></p>
+    </div>
+  </footer>
+
+  <script src="/assets/script.js"></script>
+  <script>
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+  </script>
+</body>
+</html>
