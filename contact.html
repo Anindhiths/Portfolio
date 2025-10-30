@@ -1,3 +1,4 @@
+<!-- contact.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,17 +9,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/styles.css?v=2" />
 </head>
 <body>
   <header class="site-header">
     <div class="container nav">
       <a class="brand" href="index.html">AS</a>
-      <nav>
+      <nav aria-label="Primary">
         <a href="index.html">Home</a>
         <a href="resume.html">Resume</a>
         <a href="projects.html">Projects</a>
-        <a href="contact.html" class="active">Contact</a>
+        <a href="contact.html" class="active" aria-current="page">Contact</a>
       </nav>
     </div>
   </header>
@@ -27,22 +28,41 @@
     <h1>Get in touch</h1>
     <p>Feel free to reach out for collaboration, opportunities, or just to say hi.</p>
 
-    <form class="card contact-form" id="contactForm">
+    <!-- Contact Form -->
+    <form class="card contact-form" id="contactForm" novalidate aria-describedby="formStatus">
       <div class="row">
-        <label>
-          Name
-          <input type="text" id="name" placeholder="Your name" required />
-        </label>
-        <label>
-          Email
-          <input type="email" id="email" placeholder="you@example.com" required />
-        </label>
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" autocomplete="name" required />
+          <p class="input-error" id="nameError" role="alert" aria-live="polite"></p>
+        </div>
+
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            inputmode="email"
+            required
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+            />
+          <p class="input-error" id="emailError" role="alert" aria-live="polite"></p>
+        </div>
       </div>
-      <label>
-        Message
-        <textarea id="message" rows="6" placeholder="Your message" required></textarea>
-      </label>
-      <button type="submit" class="btn primary">Send</button>
+
+      <div class="form-field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="6" placeholder="Your message" required></textarea>
+        <p class="input-error" id="messageError" role="alert" aria-live="polite"></p>
+      </div>
+
+      <!-- Honeypot field to deter basic bots (kept visually hidden via CSS or hidden attribute) -->
+      <input type="text" id="website" name="website" autocomplete="off" tabindex="-1" aria-hidden="true" hidden />
+
+      <button type="submit" class="btn primary" id="submitBtn">Send</button>
       <p class="muted" id="formStatus" role="status" aria-live="polite"></p>
     </form>
 
@@ -64,24 +84,130 @@
     </div>
   </footer>
 
-  <script src="assets/script.js"></script>
+  <script src="assets/script.js?v=2"></script>
   <script>
-    const form = document.getElementById('contactForm');
-    const statusEl = document.getElementById('formStatus');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const message = document.getElementById('message').value.trim();
-      if (!name || !email || !message) {
-        statusEl.textContent = 'Please complete all fields.';
-        return;
+    // Contact form enhanced UX with validation, error messages, and mailto fallback
+    (function () {
+      const form = document.getElementById('contactForm');
+      const statusEl = document.getElementById('formStatus');
+      const submitBtn = document.getElementById('submitBtn');
+
+      const nameEl = document.getElementById('name');
+      const emailEl = document.getElementById('email');
+      const messageEl = document.getElementById('message');
+
+      const nameError = document.getElementById('nameError');
+      const emailError = document.getElementById('emailError');
+      const messageError = document.getElementById('messageError');
+
+      const honeypot = document.getElementById('website');
+
+      // Simple, readable email validation (pattern also set on input)
+      function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       }
-      statusEl.textContent = 'Opening email client…';
-      const subject = encodeURIComponent(`Portfolio contact from ${name}`);
-      const body = encodeURIComponent(`${message}\n\n— ${name}\n${email}`);
-      window.location.href = `mailto:anindhiths@gmail.com?subject=${subject}&body=${body}`;
-    });
+
+      function setLoading(isLoading) {
+        submitBtn.disabled = isLoading;
+        submitBtn.textContent = isLoading ? 'Sending…' : 'Send';
+      }
+
+      function clearErrors() {
+        nameError.textContent = '';
+        emailError.textContent = '';
+        messageError.textContent = '';
+        statusEl.textContent = '';
+      }
+
+      function validate() {
+        clearErrors();
+        let valid = true;
+
+        if (!nameEl.value.trim()) {
+          nameError.textContent = 'Please provide your name.';
+          valid = false;
+        }
+
+        const emailVal = emailEl.value.trim();
+        if (!emailVal) {
+          emailError.textContent = 'Please provide your email.';
+          valid = false;
+        } else if (!isValidEmail(emailVal)) {
+          emailError.textContent = 'Please enter a valid email address.';
+          valid = false;
+        }
+
+        if (!messageEl.value.trim()) {
+          messageError.textContent = 'Please enter a message.';
+          valid = false;
+        }
+
+        if (honeypot && honeypot.value) {
+          // If honeypot is filled, likely a bot; silently fail.
+          statusEl.textContent = 'Submission failed. Please try again.';
+          valid = false;
+        }
+
+        return valid;
+      }
+
+      async function copyToClipboard(text) {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (_) {}
+        return false;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!validate()) return;
+
+        setLoading(true);
+        statusEl.textContent = 'Opening your email client…';
+
+        const name = nameEl.value.trim();
+        const email = emailEl.value.trim();
+        const message = messageEl.value.trim();
+
+        const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+        const body = encodeURIComponent(`${message}\n\n— ${name}\n${email}`);
+        const mailtoUrl = `mailto:anindhiths@gmail.com?subject=${subject}&body=${body}`;
+
+        // Try to open the mail client
+        try {
+          window.location.href = mailtoUrl;
+
+          // Provide a helpful fallback copy option in case mail client doesn't open
+          const rawEmail = `To: anindhiths@gmail.com\nSubject: Portfolio contact from ${name}\n\n${message}\n\n— ${name}\n${email}`;
+          const copied = await copyToClipboard(rawEmail);
+          if (copied) {
+            statusEl.textContent = 'If your email client did not open, the email content was copied to your clipboard. Paste it into your email app.';
+          } else {
+            statusEl.textContent = 'If your email client did not open, please copy the details manually from the fields and email me.';
+          }
+        } catch (err) {
+          console.error('mailto failed:', err);
+          statusEl.textContent = 'Unable to open your email client. Please email me directly at anindhiths@gmail.com.';
+        } finally {
+          setLoading(false);
+        }
+      });
+
+      // Real-time validation hints
+      nameEl.addEventListener('input', () => {
+        if (nameEl.value.trim()) nameError.textContent = '';
+      });
+      emailEl.addEventListener('input', () => {
+        const val = emailEl.value.trim();
+        if (val && isValidEmail(val)) emailError.textContent = '';
+      });
+      messageEl.addEventListener('input', () => {
+        if (messageEl.value.trim()) messageError.textContent = '';
+      });
+    })();
   </script>
 </body>
 </html>
