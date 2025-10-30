@@ -1,21 +1,44 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Anindhith Sankanna — Portfolio</title>
-  <meta name="description" content="Portfolio, resume, and projects of Anindhith Sankanna." />
+  <meta name="description" content="Portfolio, resume, and projects of Anindhith Sankanna. B.E. Computer Science student at RV Institute of Technology and Management. Interested in fintech, AI, and gameplay systems." />
+  <link rel="canonical" href="https://anindhiths.github.io/" />
+
+  <!-- Open Graph / Twitter cards -->
+  <meta property="og:title" content="Anindhith Sankanna — Portfolio" />
+  <meta property="og:description" content="Software and games with a mix of engineering and product thinking. Featured: Overruled!, Tetris (Pygame), Movie Recommender, and more." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://anindhiths.github.io/" />
+  <!-- If you add a share image, update this: -->
+  <!-- <meta property="og:image" content="https://anindhiths.github.io/assets/og-image.jpg" /> -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Anindhith Sankanna — Portfolio" />
+  <meta name="twitter:description" content="Software and games with a mix of engineering and product thinking." />
+  <!-- <meta name="twitter:image" content="https://anindhiths.github.io/assets/og-image.jpg" /> -->
+
+  <!-- Performance: preconnect, preload, and versioned assets -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="preload" href="assets/styles.css?v=2" as="style" />
+  <link rel="stylesheet" href="assets/styles.css?v=2" />
+
+  <!-- Favicons (optional—add files then uncomment) -->
+  <!-- <link rel="icon" href="assets/favicon.ico" sizes="any"> -->
+  <!-- <link rel="icon" href="assets/icon.svg" type="image/svg+xml"> -->
+  <!-- <link rel="apple-touch-icon" href="assets/apple-touch-icon.png"> -->
 </head>
 <body>
   <header class="site-header">
     <div class="container nav">
-      <a class="brand" href="index.html">AS</a>
-      <nav>
-        <a href="index.html" class="active">Home</a>
+      <a class="brand" href="index.html" aria-label="Go to home">AS</a>
+      <nav aria-label="Primary">
+        <a href="index.html" class="active" aria-current="page">Home</a>
         <a href="resume.html">Resume</a>
         <a href="projects.html">Projects</a>
         <a href="contact.html">Contact</a>
@@ -23,92 +46,101 @@
     </div>
   </header>
 
-  <main>
+  <main id="main" tabindex="-1">
     <section class="hero container">
       <div class="hero-text">
-        <h1>Hello, I'm <span class="accent">Anindhith Sankanna</span></h1>
-        <p class="lead">B.E. Computer Science student at RV Institute of Technology and Management. I build software and games, blending engineering with product thinking. Interested in fintech, AI, and gameplay systems.</p>
-        <div class="cta">
+        <h1>Hello, I’m <span class="accent">Anindhith Sankanna</span></h1>
+        <p class="lead">
+          B.E. Computer Science student at RV Institute of Technology and Management.
+          I build software and games, blending engineering with product thinking.
+          Interested in fintech, AI, and gameplay systems.
+        </p>
+        <div class="cta" role="group" aria-label="Primary actions">
           <a class="btn primary" href="resume.html">View Resume</a>
           <a class="btn" href="projects.html">Explore Projects</a>
         </div>
-        <div class="links">
-          <a target="_blank" rel="noopener" href="mailto:anindhiths@gmail.com">Email</a>
-          <span>·</span>
-          <a target="_blank" rel="noopener" href="https://www.linkedin.com/in/anindhith-s/">LinkedIn</a>
-          <span>·</span>
-          <a target="_blank" rel="noopener" href="https://github.com/Anindhiths">GitHub</a>
+        <div class="links" aria-label="External links">
+          <a target="_blank" rel="noopener noreferrer" href="mailto:anindhiths@gmail.com" aria-label="Send email to anindhiths@gmail.com">Email</a>
+          <span aria-hidden="true">·</span>
+          <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/anindhith-s/">LinkedIn</a>
+          <span aria-hidden="true">·</span>
+          <a target="_blank" rel="noopener noreferrer" href="https://github.com/Anindhiths">GitHub</a>
         </div>
       </div>
-      <div class="hero-card">
+      <div class="hero-card" aria-label="Profile snapshot">
         <div class="card">
           <h3>Snapshot</h3>
           <ul class="list">
-            <li>Location: Bengaluru</li>
-            <li>Degree: B.E. CSE (3rd year)</li>
-            <li>CGPA: 9.4/10.0</li>
-            <li>Interests: Games, AI, Finance</li>
+            <li><strong>Location:</strong> Bengaluru</li>
+            <li><strong>Degree:</strong> B.E. CSE (3rd year)</li>
+            <li><strong>CGPA:</strong> 9.4/10.0</li>
+            <li><strong>Interests:</strong> Games, AI, Finance</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <section class="container grid-2 gap-lg">
+    <section class="container grid-2 gap-lg" aria-label="Featured projects">
       <article class="card">
         <h2>Featured: Overruled!</h2>
-        <p>Interactive courtroom drama on the Monad blockchain. AI-powered judge, counsel, and witnesses with on-chain case outcomes and player achievements. An engaging way to practice legal reasoning through play.</p>
-        <div class="tags">
+        <p>
+          Interactive courtroom drama on the Monad blockchain. AI-powered judge, counsel, and witnesses
+          with on-chain case outcomes and player achievements. An engaging way to practice legal reasoning through play.
+        </p>
+        <div class="tags" aria-label="Tags">
           <span>AI</span><span>Blockchain</span><span>Game</span>
         </div>
-        <a class="btn small" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Overruled">View on GitHub</a>
+        <a class="btn small" target="_blank" rel="noopener noreferrer" href="https://github.com/Anindhiths/Overruled">View on GitHub</a>
       </article>
 
       <article class="card">
         <h2>Reverse the Sign — 2D Game</h2>
         <p>Entry for GMTK 2023 Game Jam. Fast-paced 2D gameplay based on flipping constraints at the right moment.</p>
-        <div class="tags">
+        <div class="tags" aria-label="Tags">
           <span>Game Jam</span><span>2D</span>
         </div>
-        <a class="btn small" target="_blank" rel="noopener" href="https://itch.io/jam/gmtk-2023/rate/2159319">Rate/Play</a>
+        <a class="btn small" target="_blank" rel="noopener noreferrer" href="https://itch.io/jam/gmtk-2023/rate/2159319">Rate/Play</a>
       </article>
 
       <article class="card">
         <h2>Tetris (Pygame)</h2>
         <p>Classic block-stacking game with smooth controls, increasing difficulty, and scoring. Built with Python and Pygame.</p>
-        <div class="tags">
+        <div class="tags" aria-label="Tags">
           <span>Python</span><span>Pygame</span>
         </div>
-        <a class="btn small" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Tetris">Repo</a>
+        <a class="btn small" target="_blank" rel="noopener noreferrer" href="https://github.com/Anindhiths/Tetris">Repo</a>
       </article>
 
       <article class="card">
         <h2>Amazon Discount Checker</h2>
         <p>Monitors Amazon products and alerts users when discounts or price changes occur.</p>
-        <div class="tags">
+        <div class="tags" aria-label="Tags">
           <span>Python</span><span>BeautifulSoup</span>
         </div>
-        <a class="btn small" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Amazon-Discount-Checker">Repo</a>
+        <a class="btn small" target="_blank" rel="noopener noreferrer" href="https://github.com/Anindhiths/Amazon-Discount-Checker">Repo</a>
       </article>
 
       <article class="card">
         <h2>Movie Recommender</h2>
         <p>AI-based recommendation system combining collaborative filtering and content-based methods.</p>
-        <div class="tags">
+        <div class="tags" aria-label="Tags">
           <span>TensorFlow</span><span>Scikit-learn</span><span>Pandas</span>
         </div>
-        <a class="btn small" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Movie-Reccomender">Repo</a>
+        <a class="btn small" target="_blank" rel="noopener noreferrer" href="https://github.com/Anindhiths/Movie-Reccomender">Repo</a>
       </article>
     </section>
 
-    <section id="gameSection"></section>
+    <section id="gameSection" class="container" aria-label="Interactive extras"></section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
       <p>© <span id="year"></span> Anindhith Sankanna • <a href="mailto:anindhiths@gmail.com">anindhiths@gmail.com</a></p>
+      <a class="skip-link" href="#main">Back to top</a>
     </div>
   </footer>
 
-  <script src="assets/script.js"></script>
+  <!-- Defer script and cache-bust -->
+  <script src="assets/script.js?v=2" defer></script>
 </body>
 </html>
