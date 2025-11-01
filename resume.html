@@ -7,21 +7,640 @@
   <meta name="description" content="Resume of Anindhith Sankanna" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --accent: #ec4899;
+      --success: #10b981;
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      animation: slideDown 0.6s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      transition: transform 0.3s ease;
+    }
+
+    .brand:hover {
+      transform: scale(1.1);
+    }
+
+    nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--text);
+    }
+
+    nav a:hover::after, nav a.active::after {
+      width: 100%;
+    }
+
+    /* Main Content */
+    main {
+      padding-top: 100px;
+      padding-bottom: 80px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Resume Actions */
+    .resume-actions {
+      position: fixed;
+      top: 100px;
+      right: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 50;
+      animation: slideInRight 0.6s ease 0.3s both;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .action-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(20px);
+      border: 2px solid var(--border);
+      color: var(--text);
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .action-btn:hover {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-color: transparent;
+      transform: scale(1.1);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+    }
+
+    .action-btn .tooltip {
+      position: absolute;
+      right: 70px;
+      background: rgba(30, 41, 59, 0.95);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      border: 1px solid var(--border);
+    }
+
+    .action-btn:hover .tooltip {
+      opacity: 1;
+    }
+
+    /* Resume Header */
+    .resume-header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding: 40px;
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .resume-header h1 {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .resume-header p {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .resume-header a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .resume-header a:hover {
+      color: var(--accent);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+      animation: fadeInUp 0.8s ease;
+      animation-fill-mode: both;
+    }
+
+    section:nth-child(2) { animation-delay: 0.1s; }
+    section:nth-child(3) { animation-delay: 0.2s; }
+    section:nth-child(4) { animation-delay: 0.3s; }
+    section:nth-child(5) { animation-delay: 0.4s; }
+    section:nth-child(6) { animation-delay: 0.5s; }
+
+    section h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid;
+      border-image: linear-gradient(90deg, var(--primary), var(--accent)) 1;
+      display: inline-block;
+      position: relative;
+    }
+
+    section h2::before {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      transition: width 0.6s ease;
+    }
+
+    section:hover h2::before {
+      width: 100%;
+    }
+
+    section > p {
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    /* Items */
+    .item {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 0;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+      transition: height 0.4s ease;
+    }
+
+    .item:hover {
+      transform: translateX(8px);
+      border-color: var(--primary);
+      background: rgba(30, 41, 59, 0.5);
+    }
+
+    .item:hover::before {
+      height: 100%;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .item h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .meta {
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .item a.meta {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .item a.meta:hover {
+      color: var(--accent);
+    }
+
+    .item ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .item li {
+      padding: 8px 0;
+      padding-left: 24px;
+      position: relative;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .item li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .skills-grid > div {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.4s ease;
+    }
+
+    .skills-grid > div:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2);
+    }
+
+    .skills-grid h4 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--primary);
+    }
+
+    .skills-grid p {
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* Certifications */
+    section ul:not(.item ul) {
+      list-style: none;
+    }
+
+    section ul:not(.item ul) li {
+      background: rgba(30, 41, 59, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      padding-left: 48px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    section ul:not(.item ul) li::before {
+      content: '🏆';
+      position: absolute;
+      left: 16px;
+      font-size: 20px;
+    }
+
+    section ul:not(.item ul) li:hover {
+      transform: translateX(8px);
+      border-color: var(--primary);
+      background: rgba(30, 41, 59, 0.5);
+    }
+
+    /* Print Button */
+    .btn {
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn::before {
+      content: '🖨️';
+      font-size: 18px;
+    }
+
+    /* Footer */
+    .site-footer {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .site-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .site-footer a:hover {
+      color: var(--accent);
+    }
+
+    /* Progress Indicator */
+    .scroll-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      z-index: 1000;
+      width: 0;
+      transition: width 0.1s ease;
+    }
+
+    /* Print Styles */
+    @media print {
+      body::before,
+      .site-header,
+      .site-footer,
+      .resume-actions,
+      .scroll-indicator {
+        display: none !important;
+      }
+
+      body {
+        background: white;
+        color: black;
+      }
+
+      main {
+        padding-top: 0;
+      }
+
+      .resume-header,
+      .item,
+      .skills-grid > div,
+      section ul:not(.item ul) li {
+        background: white;
+        border: 1px solid #ddd;
+        color: black;
+        page-break-inside: avoid;
+      }
+
+      .resume-header h1 {
+        color: #333;
+        -webkit-text-fill-color: #333;
+      }
+
+      section h2 {
+        color: #333;
+        border-bottom-color: #333;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      nav {
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .resume-actions {
+        position: static;
+        flex-direction: row;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .action-btn .tooltip {
+        display: none;
+      }
+
+      .resume-header h1 {
+        font-size: 36px;
+      }
+
+      .item-header {
+        flex-direction: column;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .resume-header {
+        padding: 24px;
+      }
+
+      .resume-header h1 {
+        font-size: 28px;
+      }
+
+      section h2 {
+        font-size: 24px;
+      }
+
+      .item {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="scroll-indicator" id="scrollIndicator"></div>
+
   <header class="site-header">
     <div class="container nav">
-      <a class="brand" href="index.html">AS</a>
+      <a class="brand" href="#home">AS</a>
       <nav>
-        <a href="index.html">Home</a>
-        <a href="resume.html" class="active">Resume</a>
-        <a href="projects.html">Projects</a>
-        <a href="contact.html">Contact</a>
+        <a href="#home">Home</a>
+        <a href="#resume" class="active">Resume</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
+
+  <div class="resume-actions">
+    <button class="action-btn" id="printBtn" title="Print Resume">
+      🖨️
+      <span class="tooltip">Print / Save PDF</span>
+    </button>
+    <button class="action-btn" id="downloadBtn" title="Download">
+      📥
+      <span class="tooltip">Download Resume</span>
+    </button>
+    <button class="action-btn" id="shareBtn" title="Share">
+      🔗
+      <span class="tooltip">Copy Link</span>
+    </button>
+  </div>
 
   <main class="container resume">
     <section class="resume-header">
@@ -31,46 +650,53 @@
 
     <section>
       <h2>Summary</h2>
-      <p>Bachelor of Engineering in Computer Science student at RV Institute of Technology and Management with a strong foundation in software engineering and a passion for financial analysis. Proficient in Python, C, C++, and Java.</p>
+      <p>Bachelor of Engineering in Computer Science student at RV Institute of Technology and Management with a strong foundation in software engineering and a passion for financial analysis. Proficient in Python, C, C++, and Java with hands-on experience in AI, blockchain, and game development.</p>
     </section>
 
     <section>
       <h2>Education</h2>
       <div class="item">
         <div class="item-header">
-          <h3>R V Institute of Technology and Management — B.E. in Computer Science Engineering</h3>
-          <span class="meta">CGPA: 9.4/10.0 • Currently in 3rd Year • Graduating Aug 2027</span>
+          <h3>R V Institute of Technology and Management</h3>
+          <span class="meta">Aug 2023 - Aug 2027</span>
         </div>
+        <p style="color: var(--text-muted); margin-top: 8px;">
+          <strong>B.E. in Computer Science Engineering</strong><br>
+          CGPA: 9.4/10.0 • Currently in 3rd Year
+        </p>
       </div>
     </section>
 
     <section>
       <h2>Projects</h2>
+      
       <div class="item">
         <div class="item-header">
           <h3>Overruled! — Interactive Courtroom Drama</h3>
-          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Overruled">github.com/Anindhiths/Overruled</a>
+          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Overruled">View on GitHub →</a>
         </div>
         <ul>
           <li>AI-powered judge, opposing counsel, and dynamic witnesses; outcomes recorded on Monad blockchain.</li>
           <li>Designed for immersive argumentation, evaluation, and legal reasoning skill-building via gameplay.</li>
+          <li>Integrated blockchain technology for transparent case history and achievement tracking.</li>
         </ul>
       </div>
 
       <div class="item">
         <div class="item-header">
           <h3>Reverse the Sign — 2D Game</h3>
-          <a class="meta" target="_blank" rel="noopener" href="https://itch.io/jam/gmtk-2023/rate/2159319">itch.io page</a>
+          <a class="meta" target="_blank" rel="noopener" href="https://itch.io/jam/gmtk-2023/rate/2159319">View on Itch.io →</a>
         </div>
         <ul>
           <li>Entry for GMTK 2023 Game Jam; designed and implemented 2D mechanics and level design.</li>
+          <li>Created fast-paced reflex-based gameplay with constraint-flipping mechanics.</li>
         </ul>
       </div>
 
       <div class="item">
         <div class="item-header">
           <h3>Tetris</h3>
-          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Tetris">github.com/Anindhiths/Tetris</a>
+          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Tetris">View on GitHub →</a>
         </div>
         <ul>
           <li>Classic block-stacking game with smooth controls, increasing difficulty, and a scoring system.</li>
@@ -81,7 +707,7 @@
       <div class="item">
         <div class="item-header">
           <h3>Amazon Discount Checker</h3>
-          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Amazon-Discount-Checker">github.com/Anindhiths/Amazon-Discount-Checker</a>
+          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Amazon-Discount-Checker">View on GitHub →</a>
         </div>
         <ul>
           <li>Monitors Amazon products and alerts users when discounts or price changes occur.</li>
@@ -92,7 +718,7 @@
       <div class="item">
         <div class="item-header">
           <h3>Movie Recommender</h3>
-          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Movie-Reccomender">github.com/Anindhiths/Movie-Reccomender</a>
+          <a class="meta" target="_blank" rel="noopener" href="https://github.com/Anindhiths/Movie-Reccomender">View on GitHub →</a>
         </div>
         <ul>
           <li>AI-based movie recommendation using collaborative filtering and content-based approaches.</li>
@@ -121,12 +747,6 @@
         </div>
       </div>
     </section>
-
-    <div class="resume-actions">
-      <button id="printBtn" class="btn">Print/Save as PDF</button>
-    </div>
-
-    <section class="container" id="gameSection"></section>
   </main>
 
   <footer class="site-footer">
@@ -135,9 +755,67 @@
     </div>
   </footer>
 
-  <script src="assets/script.js"></script>
   <script>
-    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    // Update year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Scroll progress indicator
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('scrollIndicator').style.width = scrolled + '%';
+    });
+
+    // Print button
+    document.getElementById('printBtn').addEventListener('click', () => {
+      window.print();
+    });
+
+    // Download button (triggers print which allows save as PDF)
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      window.print();
+    });
+
+    // Share button (copy link)
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        const btn = document.getElementById('shareBtn');
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '✓';
+        setTimeout(() => {
+          btn.innerHTML = originalContent;
+        }, 2000);
+      } catch (err) {
+        alert('Link copied: ' + window.location.href);
+      }
+    });
+
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Section animation on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('section, .item').forEach(el => {
+      observer.observe(el);
+    });
   </script>
 </body>
 </html>
