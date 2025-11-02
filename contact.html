@@ -1,4 +1,3 @@
-<!-- contact.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,18 +7,573 @@
   <meta name="description" content="Contact Anindhith Sankanna" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=2" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --accent: #ec4899;
+      --success: #10b981;
+      --error: #ef4444;
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: bgPulse 8s ease-in-out infinite;
+    }
+
+    @keyframes bgPulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      animation: slideDown 0.6s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      transition: transform 0.3s ease;
+    }
+
+    .brand:hover {
+      transform: scale(1.1);
+    }
+
+    nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--text);
+    }
+
+    nav a:hover::after, nav a.active::after {
+      width: 100%;
+    }
+
+    /* Main Content */
+    main {
+      padding-top: 120px;
+      padding-bottom: 80px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: clamp(40px, 6vw, 56px);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      letter-spacing: -2px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    main > p {
+      color: var(--text-muted);
+      font-size: 18px;
+      margin-bottom: 48px;
+      animation: fadeInUp 0.8s ease 0.1s both;
+    }
+
+    /* Card */
+    .card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      margin-bottom: 32px;
+      transition: all 0.4s ease;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+    }
+
+    .card h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Contact Form */
+    .contact-form {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .contact-form:hover::before {
+      left: 100%;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .form-field {
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+      transform: translateY(-1px);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    input.error, textarea.error {
+      border-color: var(--error);
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    input.success, textarea.success {
+      border-color: var(--success);
+    }
+
+    .input-error {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 6px;
+      min-height: 18px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .input-error:not(:empty)::before {
+      content: '⚠️';
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+
+    /* Button */
+    .btn {
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    #formStatus {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #formStatus:not(:empty) {
+      opacity: 1;
+    }
+
+    #formStatus.success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success);
+    }
+
+    #formStatus.success::before {
+      content: '✓';
+      font-size: 18px;
+    }
+
+    #formStatus.info {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: var(--primary);
+    }
+
+    #formStatus.info::before {
+      content: 'ℹ️';
+      font-size: 18px;
+    }
+
+    /* Social Links */
+    .list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .list li {
+      margin-bottom: 16px;
+    }
+
+    .list a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .list a::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 0;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+      transition: height 0.3s ease;
+    }
+
+    .list a:hover {
+      transform: translateX(8px);
+      border-color: var(--primary);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .list a:hover::before {
+      height: 100%;
+    }
+
+    .list a::after {
+      content: '→';
+      margin-left: auto;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .list a:hover::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Footer */
+    .site-footer {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .site-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .site-footer a:hover {
+      color: var(--accent);
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      z-index: 1000;
+      width: 0;
+      transition: width 0.1s ease;
+    }
+
+    /* Loading Animation */
+    .loading-dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .loading-dots span {
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      nav {
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .card {
+        padding: 28px 24px;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav a {
+        font-size: 14px;
+      }
+
+      .card {
+        padding: 24px 20px;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="scroll-indicator" id="scrollIndicator"></div>
+
   <header class="site-header">
     <div class="container nav">
-      <a class="brand" href="index.html">AS</a>
+      <a class="brand" href="#home">AS</a>
       <nav aria-label="Primary">
-        <a href="index.html">Home</a>
-        <a href="resume.html">Resume</a>
-        <a href="projects.html">Projects</a>
-        <a href="contact.html" class="active" aria-current="page">Contact</a>
+        <a href="#home">Home</a>
+        <a href="#resume">Resume</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact" class="active" aria-current="page">Contact</a>
       </nav>
     </div>
   </header>
@@ -28,7 +582,6 @@
     <h1>Get in touch</h1>
     <p>Feel free to reach out for collaboration, opportunities, or just to say hi.</p>
 
-    <!-- Contact Form -->
     <form class="card contact-form" id="contactForm" novalidate aria-describedby="formStatus">
       <div class="row">
         <div class="form-field">
@@ -48,34 +601,45 @@
             inputmode="email"
             required
             pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-            />
+          />
           <p class="input-error" id="emailError" role="alert" aria-live="polite"></p>
         </div>
       </div>
 
       <div class="form-field">
         <label for="message">Message</label>
-        <textarea id="message" name="message" rows="6" placeholder="Your message" required></textarea>
+        <textarea id="message" name="message" rows="6" placeholder="Your message..." required></textarea>
         <p class="input-error" id="messageError" role="alert" aria-live="polite"></p>
       </div>
 
-      <!-- Honeypot field to deter basic bots (kept visually hidden via CSS or hidden attribute) -->
       <input type="text" id="website" name="website" autocomplete="off" tabindex="-1" aria-hidden="true" hidden />
 
-      <button type="submit" class="btn primary" id="submitBtn">Send</button>
-      <p class="muted" id="formStatus" role="status" aria-live="polite"></p>
+      <button type="submit" class="btn primary" id="submitBtn">
+        <span id="btnText">Send Message</span>
+      </button>
+      <div id="formStatus" role="status" aria-live="polite"></div>
     </form>
 
     <div class="card">
-      <h2>Elsewhere</h2>
+      <h2>Connect Elsewhere</h2>
       <ul class="list">
-        <li><a target="_blank" rel="noopener" href="mailto:anindhiths@gmail.com">Email: anindhiths@gmail.com</a></li>
-        <li><a target="_blank" rel="noopener" href="https://www.linkedin.com/in/anindhith-s/">LinkedIn</a></li>
-        <li><a target="_blank" rel="noopener" href="https://github.com/Anindhiths">GitHub</a></li>
+        <li>
+          <a target="_blank" rel="noopener" href="mailto:anindhiths@gmail.com">
+            📧 Email: anindhiths@gmail.com
+          </a>
+        </li>
+        <li>
+          <a target="_blank" rel="noopener" href="https://www.linkedin.com/in/anindhith-s/">
+            💼 LinkedIn
+          </a>
+        </li>
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/Anindhiths">
+            💻 GitHub
+          </a>
+        </li>
       </ul>
     </div>
-
-    <section class="container" id="gameSection"></section>
   </main>
 
   <footer class="site-footer">
@@ -84,13 +648,24 @@
     </div>
   </footer>
 
-  <script src="assets/script.js?v=2"></script>
   <script>
-    // Contact form enhanced UX with validation, error messages, and mailto fallback
+    // Update year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Scroll progress indicator
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('scrollIndicator').style.width = scrolled + '%';
+    });
+
+    // Contact form handling
     (function () {
       const form = document.getElementById('contactForm');
       const statusEl = document.getElementById('formStatus');
       const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
 
       const nameEl = document.getElementById('name');
       const emailEl = document.getElementById('email');
@@ -102,14 +677,17 @@
 
       const honeypot = document.getElementById('website');
 
-      // Simple, readable email validation (pattern also set on input)
       function isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       }
 
       function setLoading(isLoading) {
         submitBtn.disabled = isLoading;
-        submitBtn.textContent = isLoading ? 'Sending…' : 'Send';
+        if (isLoading) {
+          btnText.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
+        } else {
+          btnText.textContent = 'Send Message';
+        }
       }
 
       function clearErrors() {
@@ -117,6 +695,11 @@
         emailError.textContent = '';
         messageError.textContent = '';
         statusEl.textContent = '';
+        statusEl.className = '';
+        
+        nameEl.classList.remove('error', 'success');
+        emailEl.classList.remove('error', 'success');
+        messageEl.classList.remove('error', 'success');
       }
 
       function validate() {
@@ -125,26 +708,36 @@
 
         if (!nameEl.value.trim()) {
           nameError.textContent = 'Please provide your name.';
+          nameEl.classList.add('error');
           valid = false;
+        } else {
+          nameEl.classList.add('success');
         }
 
         const emailVal = emailEl.value.trim();
         if (!emailVal) {
           emailError.textContent = 'Please provide your email.';
+          emailEl.classList.add('error');
           valid = false;
         } else if (!isValidEmail(emailVal)) {
           emailError.textContent = 'Please enter a valid email address.';
+          emailEl.classList.add('error');
           valid = false;
+        } else {
+          emailEl.classList.add('success');
         }
 
         if (!messageEl.value.trim()) {
           messageError.textContent = 'Please enter a message.';
+          messageEl.classList.add('error');
           valid = false;
+        } else {
+          messageEl.classList.add('success');
         }
 
         if (honeypot && honeypot.value) {
-          // If honeypot is filled, likely a bot; silently fail.
           statusEl.textContent = 'Submission failed. Please try again.';
+          statusEl.className = 'info';
           valid = false;
         }
 
@@ -166,7 +759,8 @@
         if (!validate()) return;
 
         setLoading(true);
-        statusEl.textContent = 'Opening your email client…';
+        statusEl.textContent = 'Opening your email client...';
+        statusEl.className = 'info';
 
         const name = nameEl.value.trim();
         const email = emailEl.value.trim();
@@ -176,38 +770,73 @@
         const body = encodeURIComponent(`${message}\n\n— ${name}\n${email}`);
         const mailtoUrl = `mailto:anindhiths@gmail.com?subject=${subject}&body=${body}`;
 
-        // Try to open the mail client
         try {
           window.location.href = mailtoUrl;
 
-          // Provide a helpful fallback copy option in case mail client doesn't open
           const rawEmail = `To: anindhiths@gmail.com\nSubject: Portfolio contact from ${name}\n\n${message}\n\n— ${name}\n${email}`;
           const copied = await copyToClipboard(rawEmail);
-          if (copied) {
-            statusEl.textContent = 'If your email client did not open, the email content was copied to your clipboard. Paste it into your email app.';
-          } else {
-            statusEl.textContent = 'If your email client did not open, please copy the details manually from the fields and email me.';
-          }
+          
+          setTimeout(() => {
+            if (copied) {
+              statusEl.textContent = 'Email content copied to clipboard! If your client didn\'t open, paste it into your email app.';
+              statusEl.className = 'success';
+            } else {
+              statusEl.textContent = 'Email client opened. If not, please email me directly at anindhiths@gmail.com';
+              statusEl.className = 'info';
+            }
+          }, 500);
         } catch (err) {
           console.error('mailto failed:', err);
-          statusEl.textContent = 'Unable to open your email client. Please email me directly at anindhiths@gmail.com.';
+          statusEl.textContent = 'Unable to open email client. Please email me directly at anindhiths@gmail.com';
+          statusEl.className = 'info';
         } finally {
           setLoading(false);
         }
       });
 
-      // Real-time validation hints
+      // Real-time validation
       nameEl.addEventListener('input', () => {
-        if (nameEl.value.trim()) nameError.textContent = '';
+        if (nameEl.value.trim()) {
+          nameError.textContent = '';
+          nameEl.classList.remove('error');
+          nameEl.classList.add('success');
+        } else {
+          nameEl.classList.remove('success');
+        }
       });
+
       emailEl.addEventListener('input', () => {
         const val = emailEl.value.trim();
-        if (val && isValidEmail(val)) emailError.textContent = '';
+        if (val && isValidEmail(val)) {
+          emailError.textContent = '';
+          emailEl.classList.remove('error');
+          emailEl.classList.add('success');
+        } else {
+          emailEl.classList.remove('success');
+        }
       });
+
       messageEl.addEventListener('input', () => {
-        if (messageEl.value.trim()) messageError.textContent = '';
+        if (messageEl.value.trim()) {
+          messageError.textContent = '';
+          messageEl.classList.remove('error');
+          messageEl.classList.add('success');
+        } else {
+          messageEl.classList.remove('success');
+        }
       });
     })();
+
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
   </script>
 </body>
 </html>
