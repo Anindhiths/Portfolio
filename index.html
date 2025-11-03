@@ -894,7 +894,7 @@
         for (let i = 0; i < numFruits; i++) {
           setTimeout(() => {
             fruits.push(new Fruit());
-          }, i * 100);
+          }, i * 1000);
         }
       }
     }
@@ -941,7 +941,7 @@
 
     function restartGame() {
       score = 0;
-      lives = 3;
+      lives = 10;
       fruits = [];
       particles = [];
       gameActive = true;
