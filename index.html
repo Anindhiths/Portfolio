@@ -678,6 +678,335 @@
     </section>
   </main>
 
+
+<div id="game-section">
+        <div id="ui">
+            <div>Score: <span id="score">0</span></div>
+            <div>Lives: <span id="lives">3</span> ❤️</div>
+        </div>
+
+        <div id="startScreen">
+            <h1>🍎 Fruit Slice 🍉</h1>
+            <p>Swipe across fruits to slice them!<br>Don't let them fall!</p>
+            <button id="startBtn">Start Game</button>
+        </div>
+
+        <div id="gameOver">
+            <h1>Game Over!</h1>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button id="restartBtn">Play Again</button>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let score = 0;
+        let lives = 3;
+        let fruits = [];
+        let particles = [];
+        let isSlicing = false;
+        let sliceTrail = [];
+        let gameActive = false;
+        let gameStarted = false;
+        let spawnInterval;
+
+        const fruitTypes = [
+            { emoji: '🍎', color: '#ff4444' },
+            { emoji: '🍊', color: '#ff8c00' },
+            { emoji: '🍋', color: '#ffd700' },
+            { emoji: '🍉', color: '#ff6b9d' },
+            { emoji: '🍇', color: '#9370db' },
+            { emoji: '🍓', color: '#ff1744' },
+            { emoji: '🍌', color: '#ffe135' },
+            { emoji: '🥝', color: '#8bc34a' }
+        ];
+
+        class Fruit {
+            constructor() {
+                this.x = Math.random() * (canvas.width - 100) + 50;
+                this.y = canvas.height + 50;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = -(Math.random() * 8 + 15);
+                this.size = 80;
+                this.rotation = 0;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.2;
+                this.gravity = 0.4;
+                this.sliced = false;
+                const type = fruitTypes[Math.floor(Math.random() * fruitTypes.length)];
+                this.emoji = type.emoji;
+                this.color = type.color;
+            }
+
+            update() {
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotationSpeed;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.font = `${this.size}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.emoji, 0, 0);
+                ctx.restore();
+            }
+
+            isOffScreen() {
+                return this.y > canvas.height + 100;
+            }
+
+            checkSlice(sx, sy) {
+                const dist = Math.sqrt((this.x - sx) ** 2 + (this.y - sy) ** 2);
+                return dist < this.size / 2;
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 10;
+                this.vy = (Math.random() - 0.5) * 10;
+                this.size = Math.random() * 8 + 4;
+                this.color = color;
+                this.life = 1;
+                this.decay = Math.random() * 0.02 + 0.01;
+            }
+
+            update() {
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                this.vy += 0.3;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+            }
+
+            draw() {
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        function spawnFruit() {
+            if (gameActive) {
+                const numFruits = Math.floor(Math.random() * 3) + 2;
+                for (let i = 0; i < numFruits; i++) {
+                    setTimeout(() => {
+                        fruits.push(new Fruit());
+                    }, i * 100);
+                }
+            }
+        }
+
+        function sliceFruit(fruit) {
+            if (!fruit.sliced) {
+                fruit.sliced = true;
+                score += 10;
+                document.getElementById('score').textContent = score;
+
+                for (let i = 0; i < 30; i++) {
+                    particles.push(new Particle(fruit.x, fruit.y, fruit.color));
+                }
+
+                const index = fruits.indexOf(fruit);
+                if (index > -1) {
+                    fruits.splice(index, 1);
+                }
+            }
+        }
+
+        function loseLife() {
+            lives--;
+            document.getElementById('lives').textContent = lives;
+            
+            if (lives <= 0) {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(spawnInterval);
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('gameOver').style.display = 'block';
+        }
+
+        function startGame() {
+            gameActive = true;
+            gameStarted = true;
+            document.getElementById('startScreen').style.display = 'none';
+            spawnInterval = setInterval(spawnFruit, 1000);
+        }
+
+        function restartGame() {
+            score = 0;
+            lives = 3;
+            fruits = [];
+            particles = [];
+            gameActive = true;
+            document.getElementById('score').textContent = score;
+            document.getElementById('lives').textContent = lives;
+            document.getElementById('gameOver').style.display = 'none';
+            clearInterval(spawnInterval);
+            spawnInterval = setInterval(spawnFruit, 1000);
+        }
+
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('restartBtn').addEventListener('click', restartGame);
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (!gameStarted) return;
+            isSlicing = true;
+            sliceTrail = [{x: e.clientX, y: e.clientY}];
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!gameStarted || !isSlicing) return;
+            if (isSlicing) {
+                sliceTrail.push({x: e.clientX, y: e.clientY});
+                
+                if (sliceTrail.length > 10) {
+                    sliceTrail.shift();
+                }
+
+                // Check all fruits against the slice trail
+                fruits.forEach(fruit => {
+                    // Check if any point in the trail intersects with the fruit
+                    for (let i = 0; i < sliceTrail.length; i++) {
+                        if (fruit.checkSlice(sliceTrail[i].x, sliceTrail[i].y)) {
+                            sliceFruit(fruit);
+                            break;
+                        }
+                    }
+                });
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            if (!gameStarted) return;
+            isSlicing = false;
+            sliceTrail = [];
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (!gameStarted) return;
+            e.preventDefault();
+            isSlicing = true;
+            const touch = e.touches[0];
+            sliceTrail = [{x: touch.clientX, y: touch.clientY}];
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (!gameStarted) return;
+            e.preventDefault();
+            if (isSlicing) {
+                const touch = e.touches[0];
+                sliceTrail.push({x: touch.clientX, y: touch.clientY});
+                
+                if (sliceTrail.length > 10) {
+                    sliceTrail.shift();
+                }
+
+                // Check all fruits against the slice trail
+                fruits.forEach(fruit => {
+                    // Check if any point in the trail intersects with the fruit
+                    for (let i = 0; i < sliceTrail.length; i++) {
+                        if (fruit.checkSlice(sliceTrail[i].x, sliceTrail[i].y)) {
+                            sliceFruit(fruit);
+                            break;
+                        }
+                    }
+                });
+            }
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            if (!gameStarted) return;
+            e.preventDefault();
+            isSlicing = false;
+            sliceTrail = [];
+        });
+
+        function drawSliceTrail() {
+            if (sliceTrail.length > 1) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                ctx.beginPath();
+                ctx.moveTo(sliceTrail[0].x, sliceTrail[0].y);
+                
+                for (let i = 1; i < sliceTrail.length; i++) {
+                    ctx.lineTo(sliceTrail[i].x, sliceTrail[i].y);
+                }
+                
+                ctx.stroke();
+            }
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (gameActive) {
+                fruits.forEach((fruit, index) => {
+                    fruit.update();
+                    fruit.draw();
+
+                    if (fruit.isOffScreen()) {
+                        fruits.splice(index, 1);
+                        if (!fruit.sliced) {
+                            loseLife();
+                        }
+                    }
+                });
+            }
+
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+
+                if (particle.isDead()) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            drawSliceTrail();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        gameLoop();
+    </script>
+
+
+  
+
   <footer class="site-footer">
     <div class="container">
       <p>© <span id="year"></span> Anindhith Sankanna • <a href="mailto:anindhiths@gmail.com">anindhiths@gmail.com</a></p>
