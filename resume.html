@@ -1097,39 +1097,67 @@
       }
     }
 
-    function generateMaze() {
-      const settings = difficultySettings[difficulty];
-      cellSize = settings.cellSize;
-      cols = settings.cols;
-      rows = settings.rows;
-
-      maze = [];
+    function drawMaze() {
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw maze walls
+      ctx.strokeStyle = '#2d3748';
+      ctx.lineWidth = 2;
+      
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
-          maze.push(new Cell(x, y));
+          const cell = maze[y][x];
+          const px = x * cellSize;
+          const py = y * cellSize;
+          
+          // Draw walls where passages don't exist
+          ctx.beginPath();
+          if (!(cell & N)) {
+            ctx.moveTo(px, py);
+            ctx.lineTo(px + cellSize, py);
+          }
+          if (!(cell & S)) {
+            ctx.moveTo(px, py + cellSize);
+            ctx.lineTo(px + cellSize, py + cellSize);
+          }
+          if (!(cell & E)) {
+            ctx.moveTo(px + cellSize, py);
+            ctx.lineTo(px + cellSize, py + cellSize);
+          }
+          if (!(cell & W)) {
+            ctx.moveTo(px, py);
+            ctx.lineTo(px, py + cellSize);
+          }
+          ctx.stroke();
         }
       }
-
-      let stack = [];
-      let current = maze[0];
-      current.visited = true;
-
-      while (true) {
-        const neighbors = getUnvisitedNeighbors(current);
-        
-        if (neighbors.length > 0) {
-          const next = neighbors[Math.floor(Math.random() * neighbors.length)];
-          stack.push(current);
-          removeWalls(current, next);
-          next.visited = true;
-          current = next;
-        } else if (stack.length > 0) {
-          current = stack.pop();
-        } else {
-          break;
-        }
-      }
+      
+      // Draw finish
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(
+        finish.x * cellSize + cellSize / 2,
+        finish.y * cellSize + cellSize / 2,
+        cellSize / 3,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+      
+      // Draw player
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(
+        player.x * cellSize + cellSize / 2,
+        player.y * cellSize + cellSize / 2,
+        cellSize / 3,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
     }
+
 
     function getUnvisitedNeighbors(cell) {
       const neighbors = [];
@@ -1169,38 +1197,50 @@
       }
     }
 
-    function drawMaze() {
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      maze.forEach(cell => cell.draw());
-
-      // Draw finish
-      ctx.fillStyle = '#ef4444';
-      ctx.beginPath();
-      ctx.arc(
-        finish.x * cellSize + cellSize / 2,
-        finish.y * cellSize + cellSize / 2,
-        cellSize / 3,
-        0,
-        Math.PI * 2
+    
+    function generateMaze() {
+      // Initialize grid with all walls
+      maze = Array(rows).fill(null).map(() => Array(cols).fill(0));
+      
+      // Create disjoint sets for each cell
+      const sets = Array(rows).fill(null).map(() => 
+        Array(cols).fill(null).map(() => new DisjointSet())
       );
-      ctx.fill();
 
-      // Draw player
-      ctx.fillStyle = '#10b981';
-      ctx.beginPath();
-      ctx.arc(
-        player.x * cellSize + cellSize / 2,
-        player.y * cellSize + cellSize / 2,
-        cellSize / 3,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
+      // Build list of all possible edges
+      const edges = [];
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (y > 0) edges.push({ x, y, dir: N });
+          if (x > 0) edges.push({ x, y, dir: W });
+        }
+      }
+
+      // Shuffle edges randomly (Fisher-Yates shuffle)
+      for (let i = edges.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [edges[i], edges[j]] = [edges[j], edges[i]];
+      }
+
+      // Kruskal's algorithm: process edges
+      for (const edge of edges) {
+        const { x, y, dir } = edge;
+        const nx = x + DX[dir];
+        const ny = y + DY[dir];
+
+        const set1 = sets[y][x];
+        const set2 = sets[ny][nx];
+
+        // If cells are not yet connected, remove the wall between them
+        if (!set1.connected(set2)) {
+          set1.connect(set2);
+          maze[y][x] |= dir;
+          maze[ny][nx] |= OPPOSITE[dir];
+        }
+      }
     }
 
-    function generateNewMaze() {
+  function generateNewMaze() {
       generateMaze();
       player = { x: 0, y: 0 };
       finish = { x: cols - 1, y: rows - 1 };
@@ -1211,6 +1251,9 @@
       document.getElementById('moves').textContent = '0';
       drawMaze();
     }
+
+
+
 
     function movePlayer(dx, dy) {
       if (!startTime) {
