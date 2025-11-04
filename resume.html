@@ -1054,6 +1054,30 @@
       document.getElementById('bestTime').textContent = best ? best : '--';
     }
 
+        class DisjointSet {
+      constructor() {
+        this.parent = null;
+      }
+
+      root() {
+        if (!this.parent) return this;
+        // Path compression
+        this.parent = this.parent.root();
+        return this.parent;
+      }
+
+      connected(other) {
+        return this.root() === other.root();
+      }
+
+      connect(other) {
+        other.root().parent = this.root();
+      }
+    }
+
+
+
+    
     // Cell class
     class Cell {
       constructor(x, y) {
