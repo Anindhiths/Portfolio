@@ -1200,6 +1200,18 @@
       ctx.fill();
     }
 
+    function generateNewMaze() {
+      generateMaze();
+      player = { x: 0, y: 0 };
+      finish = { x: cols - 1, y: rows - 1 };
+      moves = 0;
+      startTime = null;
+      clearInterval(timerInterval);
+      document.getElementById('timer').textContent = '0';
+      document.getElementById('moves').textContent = '0';
+      drawMaze();
+    }
+
     function movePlayer(dx, dy) {
       if (!startTime) {
         startTime = Date.now();
@@ -1303,17 +1315,7 @@
       drawMaze();
     }
 
-    function generateNewMaze() {
-      generateMaze();
-      player = { x: 0, y: 0 };
-      finish = { x: cols - 1, y: rows - 1 };
-      moves = 0;
-      startTime = null;
-      clearInterval(timerInterval);
-      document.getElementById('timer').textContent = '0';
-      document.getElementById('moves').textContent = '0';
-      drawMaze();
-    }
+    
 
     function closeModalAndGenerate() {
       document.getElementById('winModal').classList.remove('show');
