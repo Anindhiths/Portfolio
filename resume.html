@@ -1097,6 +1097,87 @@
       }
     }
 
+    function generateMaze() {
+      // Initialize grid with all walls
+      maze = Array(rows).fill(null).map(() => Array(cols).fill(0));
+      
+      // Create disjoint sets for each cell
+      const sets = Array(rows).fill(null).map(() => 
+        Array(cols).fill(null).map(() => new DisjointSet())
+      );
+
+      // Build list of all possible edges
+      const edges = [];
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (y > 0) edges.push({ x, y, dir: N });
+          if (x > 0) edges.push({ x, y, dir: W });
+        }
+      }
+
+      // Shuffle edges randomly (Fisher-Yates shuffle)
+      for (let i = edges.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [edges[i], edges[j]] = [edges[j], edges[i]];
+      }
+
+      // Kruskal's algorithm: process edges
+      for (const edge of edges) {
+        const { x, y, dir } = edge;
+        const nx = x + DX[dir];
+        const ny = y + DY[dir];
+
+        const set1 = sets[y][x];
+        const set2 = sets[ny][nx];
+
+        // If cells are not yet connected, remove the wall between them
+        if (!set1.connected(set2)) {
+          set1.connect(set2);
+          maze[y][x] |= dir;
+          maze[ny][nx] |= OPPOSITE[dir];
+        }
+      }
+    }
+
+    function getUnvisitedNeighbors(cell) {
+      const neighbors = [];
+      const { x, y } = cell;
+
+      const top = maze.find(c => c.x === x && c.y === y - 1);
+      const right = maze.find(c => c.x === x + 1 && c.y === y);
+      const bottom = maze.find(c => c.x === x && c.y === y + 1);
+      const left = maze.find(c => c.x === x - 1 && c.y === y);
+
+      if (top && !top.visited) neighbors.push(top);
+      if (right && !right.visited) neighbors.push(right);
+      if (bottom && !bottom.visited) neighbors.push(bottom);
+      if (left && !left.visited) neighbors.push(left);
+
+      return neighbors;
+    }
+
+    function removeWalls(current, next) {
+      const dx = current.x - next.x;
+      const dy = current.y - next.y;
+
+      if (dx === 1) {
+        current.walls.left = false;
+        next.walls.right = false;
+      } else if (dx === -1) {
+        current.walls.right = false;
+        next.walls.left = false;
+      }
+
+      if (dy === 1) {
+        current.walls.top = false;
+        next.walls.bottom = false;
+      } else if (dy === -1) {
+        current.walls.bottom = false;
+        next.walls.top = false;
+      }
+    }
+
+
     function drawMaze() {
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1158,89 +1239,7 @@
       ctx.fill();
     }
 
-
-    function getUnvisitedNeighbors(cell) {
-      const neighbors = [];
-      const { x, y } = cell;
-
-      const top = maze.find(c => c.x === x && c.y === y - 1);
-      const right = maze.find(c => c.x === x + 1 && c.y === y);
-      const bottom = maze.find(c => c.x === x && c.y === y + 1);
-      const left = maze.find(c => c.x === x - 1 && c.y === y);
-
-      if (top && !top.visited) neighbors.push(top);
-      if (right && !right.visited) neighbors.push(right);
-      if (bottom && !bottom.visited) neighbors.push(bottom);
-      if (left && !left.visited) neighbors.push(left);
-
-      return neighbors;
-    }
-
-    function removeWalls(current, next) {
-      const dx = current.x - next.x;
-      const dy = current.y - next.y;
-
-      if (dx === 1) {
-        current.walls.left = false;
-        next.walls.right = false;
-      } else if (dx === -1) {
-        current.walls.right = false;
-        next.walls.left = false;
-      }
-
-      if (dy === 1) {
-        current.walls.top = false;
-        next.walls.bottom = false;
-      } else if (dy === -1) {
-        current.walls.bottom = false;
-        next.walls.top = false;
-      }
-    }
-
-    
-    function generateMaze() {
-      // Initialize grid with all walls
-      maze = Array(rows).fill(null).map(() => Array(cols).fill(0));
-      
-      // Create disjoint sets for each cell
-      const sets = Array(rows).fill(null).map(() => 
-        Array(cols).fill(null).map(() => new DisjointSet())
-      );
-
-      // Build list of all possible edges
-      const edges = [];
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          if (y > 0) edges.push({ x, y, dir: N });
-          if (x > 0) edges.push({ x, y, dir: W });
-        }
-      }
-
-      // Shuffle edges randomly (Fisher-Yates shuffle)
-      for (let i = edges.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [edges[i], edges[j]] = [edges[j], edges[i]];
-      }
-
-      // Kruskal's algorithm: process edges
-      for (const edge of edges) {
-        const { x, y, dir } = edge;
-        const nx = x + DX[dir];
-        const ny = y + DY[dir];
-
-        const set1 = sets[y][x];
-        const set2 = sets[ny][nx];
-
-        // If cells are not yet connected, remove the wall between them
-        if (!set1.connected(set2)) {
-          set1.connect(set2);
-          maze[y][x] |= dir;
-          maze[ny][nx] |= OPPOSITE[dir];
-        }
-      }
-    }
-
-  function generateNewMaze() {
+    function generateNewMaze() {
       generateMaze();
       player = { x: 0, y: 0 };
       finish = { x: cols - 1, y: rows - 1 };
@@ -1251,9 +1250,6 @@
       document.getElementById('moves').textContent = '0';
       drawMaze();
     }
-
-
-
 
     function movePlayer(dx, dy) {
       if (!startTime) {
