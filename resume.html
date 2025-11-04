@@ -991,6 +991,7 @@
     <div class="instructions">
       <h3>📖 How to Play</h3>
       <p><strong>Desktop:</strong> Use Arrow Keys or WASD to move</p>
+      <p><strong>Mobile:</strong> Swipe or tap in the direction you want to move</p>
       <p><strong>Goal:</strong> Navigate from the green start (🟢) to the red finish (🔴)</p>
       <p><strong>Challenge:</strong> Complete the maze in the shortest time and fewest moves!</p>
     </div>
@@ -1004,14 +1005,16 @@
     </div>
   </div>
 
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Anindhith Sankanna • <a href="mailto:anindhiths@gmail.com">anindhiths@gmail.com</a></p>
+    </div>
+  </footer>
+
   <script>
     const canvas = document.getElementById('mazeCanvas');
     const ctx = canvas.getContext('2d');
     
-    // Set canvas size
-    canvas.width = 600;
-    canvas.height = 600;
-
     // Constants for directions
     const N = 1, S = 2, E = 4, W = 8;
     const DX = { [E]: 1, [W]: -1, [N]: 0, [S]: 0 };
@@ -1030,9 +1033,9 @@
     let timerInterval = null;
     let hintUsed = false;
     let bestTimes = {
-      easy: localStorage.getItem('mazeBestEasy') || null,
-      medium: localStorage.getItem('mazeBestMedium') || null,
-      hard: localStorage.getItem('mazeBestHard') || null
+      easy: null,
+      medium: null,
+      hard: null
     };
 
     // Difficulty settings
@@ -1041,6 +1044,9 @@
       medium: { cellSize: 30, cols: 20, rows: 20 },
       hard: { cellSize: 24, cols: 25, rows: 25 }
     };
+
+    // Update year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
 
     updateBestTime();
 
@@ -1060,14 +1066,14 @@
       document.getElementById('bestTime').textContent = best ? best : '--';
     }
 
-        class DisjointSet {
+    // Disjoint Set (Union-Find) for Kruskal's algorithm
+    class DisjointSet {
       constructor() {
         this.parent = null;
       }
 
       root() {
         if (!this.parent) return this;
-        // Path compression
         this.parent = this.parent.root();
         return this.parent;
       }
@@ -1081,53 +1087,16 @@
       }
     }
 
-
-
-    
-    // Cell class
-    class Cell {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.walls = { top: true, right: true, bottom: true, left: true };
-        this.visited = false;
-      }
-
-      draw() {
-        const x = this.x * cellSize;
-        const y = this.y * cellSize;
-
-        ctx.strokeStyle = '#1e3c72';
-        ctx.lineWidth = 3;
-
-        if (this.walls.top) {
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-          ctx.lineTo(x + cellSize, y);
-          ctx.stroke();
-        }
-        if (this.walls.right) {
-          ctx.beginPath();
-          ctx.moveTo(x + cellSize, y);
-          ctx.lineTo(x + cellSize, y + cellSize);
-          ctx.stroke();
-        }
-        if (this.walls.bottom) {
-          ctx.beginPath();
-          ctx.moveTo(x + cellSize, y + cellSize);
-          ctx.lineTo(x, y + cellSize);
-          ctx.stroke();
-        }
-        if (this.walls.left) {
-          ctx.beginPath();
-          ctx.moveTo(x, y + cellSize);
-          ctx.lineTo(x, y);
-          ctx.stroke();
-        }
-      }
-    }
-
     function generateMaze() {
+      const settings = difficultySettings[difficulty];
+      cellSize = settings.cellSize;
+      cols = settings.cols;
+      rows = settings.rows;
+
+      // Set canvas size
+      canvas.width = cols * cellSize;
+      canvas.height = rows * cellSize;
+
       // Initialize grid with all walls
       maze = Array(rows).fill(null).map(() => Array(cols).fill(0));
       
@@ -1169,52 +1138,13 @@
       }
     }
 
-    function getUnvisitedNeighbors(cell) {
-      const neighbors = [];
-      const { x, y } = cell;
-
-      const top = maze.find(c => c.x === x && c.y === y - 1);
-      const right = maze.find(c => c.x === x + 1 && c.y === y);
-      const bottom = maze.find(c => c.x === x && c.y === y + 1);
-      const left = maze.find(c => c.x === x - 1 && c.y === y);
-
-      if (top && !top.visited) neighbors.push(top);
-      if (right && !right.visited) neighbors.push(right);
-      if (bottom && !bottom.visited) neighbors.push(bottom);
-      if (left && !left.visited) neighbors.push(left);
-
-      return neighbors;
-    }
-
-    function removeWalls(current, next) {
-      const dx = current.x - next.x;
-      const dy = current.y - next.y;
-
-      if (dx === 1) {
-        current.walls.left = false;
-        next.walls.right = false;
-      } else if (dx === -1) {
-        current.walls.right = false;
-        next.walls.left = false;
-      }
-
-      if (dy === 1) {
-        current.walls.top = false;
-        next.walls.bottom = false;
-      } else if (dy === -1) {
-        current.walls.bottom = false;
-        next.walls.top = false;
-      }
-    }
-
-
     function drawMaze() {
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       // Draw maze walls
-      ctx.strokeStyle = '#2d3748';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#1e3c72';
+      ctx.lineWidth = 3;
       
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
@@ -1222,8 +1152,8 @@
           const px = x * cellSize;
           const py = y * cellSize;
           
-          // Draw walls where passages don't exist
           ctx.beginPath();
+          // Draw walls where passages don't exist
           if (!(cell & N)) {
             ctx.moveTo(px, py);
             ctx.lineTo(px + cellSize, py);
@@ -1281,35 +1211,30 @@
       drawMaze();
     }
 
-    function movePlayer(dx, dy) {
+    function canMove(x, y, direction) {
+      if (x < 0 || x >= cols || y < 0 || y >= rows) return false;
+      return (maze[y][x] & direction) !== 0;
+    }
+
+    function movePlayer(direction) {
       if (!startTime) {
         startTime = Date.now();
         startTimer();
       }
 
-      const newX = player.x + dx;
-      const newY = player.y + dy;
+      const newX = player.x + DX[direction];
+      const newY = player.y + DY[direction];
 
-      if (newX < 0 || newX >= cols || newY < 0 || newY >= rows) return;
+      if (canMove(player.x, player.y, direction)) {
+        player.x = newX;
+        player.y = newY;
+        moves++;
+        document.getElementById('moves').textContent = moves;
+        drawMaze();
 
-      const currentCell = maze.find(c => c.x === player.x && c.y === player.y);
-
-      // Check walls
-      if (dx === 1 && currentCell.walls.right) return;
-      if (dx === -1 && currentCell.walls.left) return;
-      if (dy === 1 && currentCell.walls.bottom) return;
-      if (dy === -1 && currentCell.walls.top) return;
-
-      player.x = newX;
-      player.y = newY;
-      moves++;
-      document.getElementById('moves').textContent = moves;
-
-      drawMaze();
-
-      // Check win
-      if (player.x === finish.x && player.y === finish.y) {
-        winGame();
+        if (player.x === finish.x && player.y === finish.y) {
+          winGame();
+        }
       }
     }
 
@@ -1327,7 +1252,6 @@
       // Update best time
       if (!bestTimes[difficulty] || elapsed < parseInt(bestTimes[difficulty])) {
         bestTimes[difficulty] = elapsed;
-        localStorage.setItem(`mazeBest${difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}`, elapsed);
         updateBestTime();
         document.getElementById('winMessage').innerHTML = 
           `🎊 New Record!<br>Time: ${elapsed}s • Moves: ${moves}`;
@@ -1342,27 +1266,26 @@
     function showHint() {
       if (hintUsed) return;
       
-      // Show a path hint by highlighting valid directions
-      const currentCell = maze.find(c => c.x === player.x && c.y === player.y);
-      
       ctx.save();
       ctx.globalAlpha = 0.3;
+      ctx.fillStyle = '#fbbf24';
       
-      if (!currentCell.walls.right) {
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(player.x * cellSize + cellSize/2, player.y * cellSize, cellSize/2, cellSize);
+      const px = player.x * cellSize;
+      const py = player.y * cellSize;
+      const cell = maze[player.y][player.x];
+      
+      // Highlight valid directions
+      if (cell & N) {
+        ctx.fillRect(px, py, cellSize, cellSize / 2);
       }
-      if (!currentCell.walls.left) {
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(player.x * cellSize, player.y * cellSize, cellSize/2, cellSize);
+      if (cell & S) {
+        ctx.fillRect(px, py + cellSize / 2, cellSize, cellSize / 2);
       }
-      if (!currentCell.walls.bottom) {
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(player.x * cellSize, player.y * cellSize + cellSize/2, cellSize, cellSize/2);
+      if (cell & E) {
+        ctx.fillRect(px + cellSize / 2, py, cellSize / 2, cellSize);
       }
-      if (!currentCell.walls.top) {
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(player.x * cellSize, player.y * cellSize, cellSize, cellSize/2);
+      if (cell & W) {
+        ctx.fillRect(px, py, cellSize / 2, cellSize);
       }
       
       ctx.restore();
@@ -1384,8 +1307,6 @@
       drawMaze();
     }
 
-    
-
     function closeModalAndGenerate() {
       document.getElementById('winModal').classList.remove('show');
       generateNewMaze();
@@ -1398,30 +1319,30 @@
         case 'w':
         case 'W':
           e.preventDefault();
-          movePlayer(0, -1);
+          movePlayer(N);
           break;
         case 'ArrowDown':
         case 's':
         case 'S':
           e.preventDefault();
-          movePlayer(0, 1);
+          movePlayer(S);
           break;
         case 'ArrowLeft':
         case 'a':
         case 'A':
           e.preventDefault();
-          movePlayer(-1, 0);
+          movePlayer(W);
           break;
         case 'ArrowRight':
         case 'd':
         case 'D':
           e.preventDefault();
-          movePlayer(1, 0);
+          movePlayer(E);
           break;
       }
     });
 
-    // Touch/click controls
+    // Touch/swipe controls
     let touchStartX = 0;
     let touchStartY = 0;
 
@@ -1438,13 +1359,17 @@
       const dx = touch.clientX - touchStartX;
       const dy = touch.clientY - touchStartY;
 
+      const threshold = 30;
+      if (Math.abs(dx) < threshold && Math.abs(dy) < threshold) return;
+
       if (Math.abs(dx) > Math.abs(dy)) {
-        movePlayer(dx > 0 ? 1 : -1, 0);
+        movePlayer(dx > 0 ? E : W);
       } else {
-        movePlayer(0, dy > 0 ? 1 : -1);
+        movePlayer(dy > 0 ? S : N);
       }
     });
 
+    // Click controls
     canvas.addEventListener('click', (e) => {
       const rect = canvas.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
@@ -1457,87 +1382,14 @@
       const dy = clickY - playerCenterY;
       
       if (Math.abs(dx) > Math.abs(dy)) {
-        movePlayer(dx > 0 ? 1 : -1, 0);
+        movePlayer(dx > 0 ? E : W);
       } else {
-        movePlayer(0, dy > 0 ? 1 : -1);
+        movePlayer(dy > 0 ? S : N);
       }
     });
 
     // Initialize
     generateNewMaze();
-  </script>
-
-
-
-
-  
-  <footer class="site-footer">
-    <div class="container">
-      <p>© <span id="year"></span> Anindhith Sankanna • <a href="mailto:anindhiths@gmail.com">anindhiths@gmail.com</a></p>
-    </div>
-  </footer>
-
-  <script>
-    // Update year
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Scroll progress indicator
-    window.addEventListener('scroll', () => {
-      const winScroll = document.documentElement.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
-      document.getElementById('scrollIndicator').style.width = scrolled + '%';
-    });
-
-    // Print button
-    document.getElementById('printBtn').addEventListener('click', () => {
-      window.print();
-    });
-
-    // Download button (triggers print which allows save as PDF)
-    document.getElementById('downloadBtn').addEventListener('click', () => {
-      window.print();
-    });
-
-    // Share button (copy link)
-    document.getElementById('shareBtn').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        const btn = document.getElementById('shareBtn');
-        const originalContent = btn.innerHTML;
-        btn.innerHTML = '✓';
-        setTimeout(() => {
-          btn.innerHTML = originalContent;
-        }, 2000);
-      } catch (err) {
-        alert('Link copied: ' + window.location.href);
-      }
-    });
-
-    // Smooth scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-
-    // Section animation on scroll
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('section, .item').forEach(el => {
-      observer.observe(el);
-    });
   </script>
 </body>
 </html>
